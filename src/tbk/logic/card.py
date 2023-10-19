@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import Enum
+import re
 from typing import Self
 
 from .repeater import Repeater, parse_repeater
@@ -27,7 +28,7 @@ class Card:
         d = d.copy()
         kwargs = {}
         if 'status' in d:
-            kwargs['status'] = Status(d.pop('status'))
+            kwargs['status'] = Status(re.sub(r'\s*', '', d.pop('status')))
         if 'due' in d:
             kwargs['due'] = d.pop('due')
         if 'repeat' in d:
