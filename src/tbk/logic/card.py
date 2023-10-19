@@ -45,6 +45,24 @@ class Card:
             raise ValueError(f'Unexpected extra data: {d}')
         return cls(**kwargs)
 
+    def to_yaml(self) -> dict:
+        d = {}
+        # insertion order is serialization order
+        d['status'] = self.status.value
+        if self.due is not None:
+            d['due'] = self.due
+        if self.repeat is not None:
+            d['repeat'] = str(self.repeat)
+        if self.estimate is not None:
+            d['estimate'] = self.estimate
+        if len(self.reminder) > 1:
+            d['reminder'] = self.reminder
+        elif self.reminder:
+            d['reminder'] = self.reminder[0]
+        if self.start is not None:
+            d['start'] = self.start
+        return d
+
     def do_repeat(self) -> None:
         if self.repeat is None:
             return
