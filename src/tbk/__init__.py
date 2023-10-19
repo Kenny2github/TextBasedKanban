@@ -3,6 +3,7 @@ import os
 import sys
 
 from .cmd.init import setup as setup_init
+from .cmd.status import setup as setup_status
 
 __all__ = [
     'main',
@@ -28,6 +29,7 @@ def main(cmdargs: list[str] | None = None) -> None:
     subparsers = parser.add_subparsers(required=True, dest='cmd')
 
     setup_init(subparsers)
+    setup_status(subparsers)
 
     args = parser.parse_args(cmdargs)
 
