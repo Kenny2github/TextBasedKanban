@@ -40,7 +40,9 @@ class Card:
                 kwargs['reminder'] = [kwargs['reminder']]
         if 'start' in d:
             kwargs['start'] = d.pop('start')
-        return cls(**d)
+        if d:
+            raise ValueError(f'Unexpected extra data: {d}')
+        return cls(**kwargs)
 
     def do_repeat(self) -> None:
         if self.repeat is None:
