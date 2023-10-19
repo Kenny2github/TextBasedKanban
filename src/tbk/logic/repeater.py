@@ -109,7 +109,7 @@ class Monthly(Repeater):
         while dt.day not in days:
             _, last_monthday = monthrange(dt.year, dt.month)
             # convert negative days to days from end of month
-            days = [day if day > 0 else last_monthday + day - 1
+            days = [day if day > 0 else last_monthday + day + 1
                     for day in self.days_of_month]
             dt += timedelta(days=1)
         return dt
