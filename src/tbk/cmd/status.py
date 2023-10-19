@@ -2,7 +2,7 @@ from __future__ import annotations
 from argparse import _SubParsersAction, ArgumentParser
 import os
 from pathlib import Path
-from pprint import pprint
+import sys
 import yaml
 
 from ..logic.card import Card
@@ -26,7 +26,8 @@ def main(_) -> None:
             with open(card_name) as f:
                 data = yaml.load(f, yaml.Loader)
             card = Card.from_yaml(data)
-            pprint(card)
+            yaml.dump(card.to_yaml(), sys.stdout, yaml.Dumper,
+                      default_flow_style=False, sort_keys=False)
 
 def setup(subparsers: _SubParsersAction[ArgumentParser]) -> None:
     parser = subparsers.add_parser('status')
