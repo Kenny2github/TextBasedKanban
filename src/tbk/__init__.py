@@ -2,8 +2,14 @@ import argparse
 import os
 import sys
 
+from .init import setup as setup_init
+
 __all__ = [
     'main',
+]
+
+_NO_NEED_TBK_DIR = [
+    'init',
 ]
 
 def _find_tbk_dir() -> bool:
@@ -16,12 +22,16 @@ def _find_tbk_dir() -> bool:
     return True
 
 def main(cmdargs: list[str] | None = None) -> None:
-    if not _find_tbk_dir():
-        sys.exit('fatal: no .tbk directory found in working directory or any parent')
-
     parser = argparse.ArgumentParser(
         description='Vaguely git-flavored text-based Kanban board management.')
 
+    subparsers = parser.add_subparsers(required=True, dest='cmd')
+
+    setup_init(subparsers)
+
     args = parser.parse_args(cmdargs)
 
-    print(args)
+    if args.cmd not in _NO_NEED_TBK_DIR and not _find_tbk_dir():
+        sys.exit('fatal: no .tbk directory found in working directory or any parent')
+
+    args.func(args)
