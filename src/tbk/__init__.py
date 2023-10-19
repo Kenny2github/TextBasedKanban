@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 
-from .init import setup as setup_init
+from .cmd.init import setup as setup_init
 
 __all__ = [
     'main',
