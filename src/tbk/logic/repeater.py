@@ -77,7 +77,7 @@ class Monthly(Repeater):
             raise ValueError('Cannot combine multi-month step '
                              'and specific days of month')
         for day in self.days_of_month:
-            if day not in range(1, 29):
+            if day not in range(-28, 29):
                 raise ValueError(f'Invalid day of month: {day}')
 
     @staticmethod
@@ -85,9 +85,12 @@ class Monthly(Repeater):
         if 0 in days:
             raise ValueError('No month has day 0; use -1'
                              'for the last day of the month.')
-        for problem in (29, 30, 31):
+        for problem in (29, 30, 31, -29, -30, -31):
             if problem in days:
-                possibilities = (-1, -2, -3)[:32 - problem]
+                possibilities = (
+                    (-1, -2, -3)[:32 - problem]
+                    if problem > 0 else (1, 2, 3)[:32 + problem]
+                )
                 raise ValueError(
                     f'Not all months have day {problem}; did you mean to use '
                     f'"every {possibilities} of the month"?')
