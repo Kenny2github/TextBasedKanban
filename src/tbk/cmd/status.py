@@ -2,10 +2,11 @@ from __future__ import annotations
 from argparse import _SubParsersAction, ArgumentParser
 import os
 from pathlib import Path
+import pickle
 import yaml
 
 from ..logic.card import Card
-from ..logic.consts import ROOT_CARD, TBK_DIR
+from ..logic.consts import ROOT_CARD, TBK_DIR, LAST_STATUS
 from ..utils.graphics import str_table
 
 __all__ = [
@@ -38,6 +39,8 @@ def get_cards() -> list[Card]:
 def main(_) -> None:
     cards = get_cards()
     cards.sort()
+    with open(LAST_STATUS, 'wb') as f:
+        pickle.dump(cards, f)
 
     table: list[list[object]] = [['#', 'Status', 'Est', 'Due', 'Name']]
     for i, card in enumerate(cards, start=1):
