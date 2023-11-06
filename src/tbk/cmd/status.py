@@ -67,15 +67,7 @@ def sort_cards(cards: list[Card], sort: list[SortKey]) -> None:
             case 'due' | '!due':
                 cards.sort(key=lambda card: _empty_value(card.due), reverse=reverse)
 
-def main(args: _StatusArgs) -> None:
-    cards = get_cards()
-    if args.sort is None:
-        cards.sort()
-    else:
-        sort_cards(cards, args.sort)
-    with open(LAST_STATUS, 'wb') as f:
-        pickle.dump(cards, f)
-
+def print_cards(cards: list[Card]) -> None:
     table = Table(show_header=True)
     table.add_column('#', justify='right')
     table.add_column('Status', justify='center')
@@ -90,6 +82,19 @@ def main(args: _StatusArgs) -> None:
             str(due), card.title
         )
     print(table)
+
+def main(args: _StatusArgs) -> None:
+    cards = get_cards()
+    # sort cards
+    if args.sort is None:
+        cards.sort()
+    else:
+        sort_cards(cards, args.sort)
+    # save this order for other commands to use
+    with open(LAST_STATUS, 'wb') as f:
+        pickle.dump(cards, f)
+    # output pretty table
+    print_cards(cards)
 
 def setup(subparsers: _SubParsersAction[ArgumentParser]) -> None:
     parser = subparsers.add_parser('status')
