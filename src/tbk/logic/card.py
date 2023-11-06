@@ -94,7 +94,8 @@ class Card:
             reminder_deltas = [due_date - reminder for reminder in reminders]
             start_delta = (due_date - start) if start is not None else None
 
-            self.due = self.repeat.repeat(self.due)
+            while self.due <= date.today():
+                self.due = self.repeat.repeat(self.due)
             self.reminder = [datetime.combine(self.due - delta, reminder.time())
                              for delta, reminder in zip(reminder_deltas, self.reminder)]
             if start_delta is not None:
@@ -110,9 +111,11 @@ class Card:
             start = self.start.date() if isinstance(self.start, datetime) else self.start
 
             deltas = [start - reminder.date() for reminder in self.reminder]
-            self.start = self.repeat.repeat(self.start)
+            while self.start <= date.today():
+                self.start = self.repeat.repeat(self.start)
             self.reminder = [datetime.combine(self.start - delta, reminder.time())
                              for delta, reminder in zip(deltas, self.reminder)]
             return
         # only reminder might not be empty
-        self.reminder = list(map(self.repeat.repeat, self.reminder))
+        while any(r <= date.today() for r in self.reminder):
+            self.reminder = list(map(self.repeat.repeat, self.reminder))
