@@ -19,12 +19,8 @@ def _str_table(
     # pad table IN PLACE
     for row, max_height, row_alignment in zip(table, max_heights, row_alignments):
         for cell, max_width, col_alignment in zip(row, max_widths, col_alignments):
-            num_lines = len(cell)
-            if num_lines > max_height:
-                raise RuntimeError(f'more lines than max {max_height}: {cell!r}')
-            if num_lines == max_height:
-                continue
             # vertically pad with newlines IN PLACE
+            num_lines = len(cell)
             match row_alignment:
                 case -1: # top
                     # append empty lines
@@ -43,6 +39,7 @@ def _str_table(
     col_sep = '|'
     row_sep = '+'.join('-' * (max_width + 2) # include surrounding spaces
                        for max_width in max_widths)
+    row_sep = f'\n{row_sep}\n'
     return row_sep.join(
         '\n'.join(
             col_sep.join(f' {cell[i]} ' for cell in row)
