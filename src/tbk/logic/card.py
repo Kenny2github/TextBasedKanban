@@ -43,6 +43,33 @@ class Card:
     reminder: list[datetime] = field(default_factory=list)
     start: datetime | date | None = None
 
+    def __lt__(self, other: Self) -> bool:
+        if self.due is not None:
+            if other.due is not None:
+                return self.due < other.due
+            return True # with due date < without due date
+        if other.due is not None:
+            return False # guaranteed self.due is None
+        # both None, check reminder
+        if self.reminder:
+            if other.reminder:
+                return min(self.reminder) < min(other.reminder)
+            return True # with reminder < without reminder
+        if other.reminder:
+            return False # guaranteed not self.reminder
+        # both empty, check start
+        if self.start is not None:
+            if other.start is not None:
+                return self.start < other.start
+            return True # with start date < without start date
+        if other.start is not None:
+            return False # guaranteed self.start is None
+        # both empty, check status
+        if self.status != other.status:
+            return self.status < other.status
+        # same status, check estimate
+        return (self.estimate or 0) < (other.estimate or 0)
+
     @classmethod
     def from_yaml(cls: type[Self], title: str, d: dict) -> Self:
         d = d.copy()

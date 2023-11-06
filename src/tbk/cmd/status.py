@@ -12,13 +12,6 @@ __all__ = [
     'setup',
 ]
 
-class _EmptyDate:
-    def __str__(self) -> str:
-        return ''
-    def __lt__(self, other: object) -> bool:
-        return False
-_empty_date = _EmptyDate()
-
 def main(_) -> None:
     cards: list[Card] = []
     for dirpath, dirnames, filenames in os.walk(Path('.')):
@@ -40,7 +33,7 @@ def main(_) -> None:
                 else str(card_name).removesuffix('.yaml')
             ), data)
             cards.append(card)
-    cards.sort(key=lambda card: card.due or _empty_date)
+    cards.sort()
 
     table: list[list[object]] = [['#', 'Status', 'Est', 'Due', 'Name']]
     for i, card in enumerate(cards, start=1):
