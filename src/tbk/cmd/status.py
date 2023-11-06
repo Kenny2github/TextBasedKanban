@@ -3,6 +3,7 @@ from argparse import _SubParsersAction, ArgumentParser
 import os
 from pathlib import Path
 import pickle
+from typing import Literal, Optional, Self, TypeVar, get_args
 import yaml
 
 from ..logic.card import Card
@@ -12,6 +13,27 @@ from ..utils.graphics import str_table
 __all__ = [
     'setup',
 ]
+
+_T = TypeVar('_T')
+class _EmptyValue:
+    def __str__(self) -> str:
+        return ''
+    def __lt__(self, other: object) -> bool:
+        return False
+    def __call__(self, value: Optional[_T]) -> _T | Self:
+        if value is None:
+            return self
+        return value
+_empty_value = _EmptyValue()
+
+SortKey = Literal[
+    'status', '!status',
+    'estimate', '!estimate',
+    'due', '!due',
+]
+
+class _StatusArgs:
+    sort: Optional[list[SortKey]]
 
 def get_cards() -> list[Card]:
     cards: list[Card] = []
@@ -36,9 +58,23 @@ def get_cards() -> list[Card]:
             cards.append(card)
     return cards
 
-def main(_) -> None:
+def sort_cards(cards: list[Card], sort: list[SortKey]) -> None:
+    for key in reversed(sort):
+        reverse = key.startswith('!')
+        match key:
+            case 'status' | '!status':
+                cards.sort(key=lambda card: card.status, reverse=reverse)
+            case 'estimate' | '!estimate':
+                cards.sort(key=lambda card: _empty_value(card.estimate), reverse=reverse)
+            case 'due' | '!due':
+                cards.sort(key=lambda card: _empty_value(card.due), reverse=reverse)
+
+def main(args: _StatusArgs) -> None:
     cards = get_cards()
-    cards.sort()
+    if args.sort is None:
+        cards.sort()
+    else:
+        sort_cards(cards, args.sort)
     with open(LAST_STATUS, 'wb') as f:
         pickle.dump(cards, f)
 
@@ -52,3 +88,6 @@ def main(_) -> None:
 def setup(subparsers: _SubParsersAction[ArgumentParser]) -> None:
     parser = subparsers.add_parser('status')
     parser.set_defaults(func=main)
+    parser.add_argument(
+        '-s', '--sort', nargs='+', choices=get_args(SortKey),
+        default=None, help='the key(s) to sort by; ! for reverse order')
