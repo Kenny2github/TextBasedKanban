@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "TextBasedKanban"
-version = "0.0.0a0"
+version = "0.0.0a1"
 authors = [{name="AbyxDev", email="ken@abyx.dev"}]
 description = "Vaguely git-flavored text-based Kanban board management."
 readme = "README.md"
