@@ -35,6 +35,7 @@ class Status(Enum):
 
 @dataclass(kw_only=True)
 class Card:
+    title: str
     status: Status = Status.BACKLOG
     due: datetime | date | None = None
     repeat: Repeater | None = None
@@ -43,7 +44,7 @@ class Card:
     start: datetime | date | None = None
 
     @classmethod
-    def from_yaml(cls: type[Self], d: dict) -> Self:
+    def from_yaml(cls: type[Self], title: str, d: dict) -> Self:
         d = d.copy()
         kwargs = {}
         if 'status' in d:
@@ -62,7 +63,7 @@ class Card:
             kwargs['start'] = d.pop('start')
         if d:
             raise ValueError(f'Unexpected extra data: {d}')
-        return cls(**kwargs)
+        return cls(title=title, **kwargs)
 
     def to_yaml(self) -> dict:
         d = {}
