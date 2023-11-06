@@ -9,7 +9,7 @@ from rich import print
 from rich.table import Table
 
 from ..logic.card import Card
-from ..logic.consts import TBK_DIR, LAST_STATUS
+from ..logic.consts import ROOT_CARD, TBK_DIR, LAST_STATUS
 
 __all__ = [
     'setup',
@@ -73,6 +73,7 @@ def print_cards(cards: list[Card]) -> None:
     table.add_column('Status', justify='center')
     table.add_column('Est', justify='right')
     table.add_column('Due', justify='left')
+    table.add_column('Parent(s)', justify='right')
     table.add_column('Title', justify='left')
     for i, card in enumerate(cards, start=1):
         status = card.status.pretty
@@ -80,9 +81,12 @@ def print_cards(cards: list[Card]) -> None:
         days_left = (card.due - card.due.today()).days # type: ignore
         if card.due is not None and days_left <= 1:
             due = f'[bold red underline]{due}[/]'
+        title = Path(card.title)
+        if title.name == ROOT_CARD.removesuffix('.yaml'):
+            title = title.parent
         table.add_row(
             str(i), status, str(_empty_value(card.estimate)),
-            str(due), card.title
+            str(due), title.parent.as_posix(), title.name
         )
     print(table)
 
