@@ -19,6 +19,10 @@ class Status(Enum):
     IN_PROGRESS = 'inprogress'
     BLOCKED = 'blocked'
 
+    @property
+    def pretty(self) -> str:
+        return self.name.replace('_', ' ').title()
+
 @dataclass(kw_only=True)
 class Card:
     status: Status = Status.BACKLOG
@@ -33,7 +37,7 @@ class Card:
         d = d.copy()
         kwargs = {}
         if 'status' in d:
-            kwargs['status'] = Status(re.sub(r'\s*', '', d.pop('status')))
+            kwargs['status'] = Status(re.sub(r'\s*', '', d.pop('status').casefold()))
         if 'due' in d:
             kwargs['due'] = d.pop('due')
         if 'repeat' in d:
@@ -53,7 +57,7 @@ class Card:
     def to_yaml(self) -> dict:
         d = {}
         # insertion order is serialization order
-        d['status'] = self.status.value
+        d['status'] = self.status.pretty
         if self.due is not None:
             d['due'] = self.due
         if self.repeat is not None:
