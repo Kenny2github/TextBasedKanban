@@ -51,10 +51,7 @@ def get_cards() -> list[Card]:
             card_name = dirpath / card_name
             with open(card_name) as f:
                 data = yaml.load(f, yaml.Loader)
-            card = Card.from_yaml(str(
-                card_name.parent if card_name.name == ROOT_CARD
-                else str(card_name).removesuffix('.yaml')
-            ), data)
+            card = Card.from_yaml(card_name.as_posix().removesuffix('.yaml'), data)
             cards.append(card)
     return cards
 
