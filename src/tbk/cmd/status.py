@@ -77,6 +77,9 @@ def print_cards(cards: list[Card]) -> None:
     for i, card in enumerate(cards, start=1):
         status = card.status.pretty
         due = '' if card.due is None else card.due
+        days_left = (card.due - card.due.today()).days # type: ignore
+        if card.due is not None and days_left <= 1:
+            due = f'[bold red underline]{due}[/]'
         table.add_row(
             str(i), status, str(_empty_value(card.estimate)),
             str(due), card.title
