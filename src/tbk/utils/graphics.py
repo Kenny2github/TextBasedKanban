@@ -2,6 +2,10 @@
 from collections.abc import Iterable, Sequence
 from typing import Any, Literal, Union
 
+__all__ = [
+    'str_table',
+]
+
 def _str_table(
     table: list[list[list[str]]],
     col_alignments: Sequence[int],
