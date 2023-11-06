@@ -40,13 +40,13 @@ def _str_table(
             # horizontally pad with spaces IN PLACE
             method = {-1: str.ljust, 0: str.center, 1: str.rjust}[col_alignment]
             cell[:] = [method(line, max_width) for line in cell]
-    col_sep = '|'
+    col_sep = ' | '
     row_sep = '+'.join('-' * (max_width + 2) # include surrounding spaces
                        for max_width in max_widths)
-    row_sep = f'\n{row_sep}\n'
+    row_sep = f'\n{row_sep[1:-1]}\n' # trim leading and trailing dash
     return row_sep.join(
         '\n'.join(
-            col_sep.join(f' {cell[i]} ' for cell in row)
+            col_sep.join(cell[i] for cell in row).rstrip()
             for i in range(max_height)
         ) for row, max_height in zip(table, max_heights)
     )
