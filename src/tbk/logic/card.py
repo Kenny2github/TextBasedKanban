@@ -6,6 +6,11 @@ from typing import Self
 
 from .repeater import Repeater, parse_repeater
 
+__all__ = [
+    'Status',
+    'Card',
+]
+
 class Status(Enum):
     # normalized to have no spaces
     BACKLOG = 'backlog'

@@ -8,6 +8,10 @@ import yaml
 from ..logic.card import Card
 from ..logic.consts import ROOT_CARD, TBK_DIR
 
+__all__ = [
+    'setup',
+]
+
 def main(_) -> None:
     for dirpath, dirnames, filenames in os.walk(Path('.')):
         dirpath = Path(dirpath)
