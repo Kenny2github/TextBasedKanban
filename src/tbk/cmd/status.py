@@ -5,10 +5,11 @@ from pathlib import Path
 import pickle
 from typing import Literal, Optional, Self, TypeVar, get_args
 import yaml
+from rich import print
+from rich.table import Table
 
 from ..logic.card import Card
-from ..logic.consts import ROOT_CARD, TBK_DIR, LAST_STATUS
-from ..utils.graphics import str_table
+from ..logic.consts import TBK_DIR, LAST_STATUS
 
 __all__ = [
     'setup',
@@ -75,12 +76,20 @@ def main(args: _StatusArgs) -> None:
     with open(LAST_STATUS, 'wb') as f:
         pickle.dump(cards, f)
 
-    table: list[list[object]] = [['#', 'Status', 'Est', 'Due', 'Name']]
+    table = Table(show_header=True)
+    table.add_column('#', justify='right')
+    table.add_column('Status', justify='center')
+    table.add_column('Est', justify='right')
+    table.add_column('Due', justify='left')
+    table.add_column('Title', justify='left')
     for i, card in enumerate(cards, start=1):
         status = card.status.pretty
         due = '' if card.due is None else card.due
-        table.append([i, status, card.estimate, due, card.title])
-    print(str_table(table, [1, 0, 1, -1, -1]))
+        table.add_row(
+            str(i), status, str(_empty_value(card.estimate)),
+            str(due), card.title
+        )
+    print(table)
 
 def setup(subparsers: _SubParsersAction[ArgumentParser]) -> None:
     parser = subparsers.add_parser('status')
