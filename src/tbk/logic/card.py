@@ -23,6 +23,16 @@ class Status(Enum):
     def pretty(self) -> str:
         return self.name.replace('_', ' ').title()
 
+    def __lt__(self, other: Self) -> bool:
+        if self == other:
+            return False
+        for value in type(self):
+            if value == self:
+                return True
+            if value == other:
+                return False
+        return NotImplemented
+
 @dataclass(kw_only=True)
 class Card:
     status: Status = Status.BACKLOG
