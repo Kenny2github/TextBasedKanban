@@ -14,6 +14,9 @@ requires-python = ">=3.10"
 [project.scripts]
 tbk = "tbk:main"
 
+[project.optional-dependencies]
+test = ["pytest~=7.0"]
+
 [project.urls]
 "Homepage" = "https://github.com/Kenny2github/TextBasedKanban"
 "Bug Tracker" = "https://github.com/Kenny2github/TextBasedKanban/issues"
