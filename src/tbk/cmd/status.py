@@ -12,7 +12,7 @@ __all__ = [
     'setup',
 ]
 
-def main(_) -> None:
+def get_cards() -> list[Card]:
     cards: list[Card] = []
     for dirpath, dirnames, filenames in os.walk(Path('.')):
         dirpath = Path(dirpath)
@@ -33,6 +33,10 @@ def main(_) -> None:
                 else str(card_name).removesuffix('.yaml')
             ), data)
             cards.append(card)
+    return cards
+
+def main(_) -> None:
+    cards = get_cards()
     cards.sort()
 
     table: list[list[object]] = [['#', 'Status', 'Est', 'Due', 'Name']]
